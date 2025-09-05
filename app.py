@@ -16,7 +16,7 @@ os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 # Logo helper functions
-def get_logo_base64(logo_path="download.png"):
+def get_logo_base64(logo_path="download-removebg-preview.png"):
     """Get base64 encoded logo data"""
     try:
         with open(logo_path, "rb") as logo_file:
@@ -28,12 +28,12 @@ def get_logo_base64(logo_path="download.png"):
         st.error(f"Error loading logo: {str(e)}")
         return None
 
-def display_logo(logo_path="download.png", width=80, height=80):
-    """Display company logo from file"""
+def display_logo(logo_path="download-removebg-preview.png", width=80, height=80):
+    """Display company logo from file with black background"""
     logo_base64 = get_logo_base64(logo_path)
     if logo_base64:
         st.markdown(f"""
-        <div style="text-align: center; margin-bottom: 20px;">
+        <div style="text-align: center; margin-bottom: 20px; background-color: #000000; padding: 15px; border-radius: 10px; display: inline-block;">
             <img src="data:image/png;base64,{logo_base64}" width="{width}" height="{height}">
         </div>
         """, unsafe_allow_html=True)
@@ -116,14 +116,55 @@ def main():
         page_title="VariPhi RAG Engine",
         page_icon="🤖"
     )
+    
+    # Global CSS for black sidebar
+    st.markdown("""
+    <style>
+    .stSidebar {
+        background-color: #000000 !important;
+    }
+    .stSidebar > div {
+        background-color: #000000 !important;
+    }
+    .stSidebar .stSelectbox > div > div {
+        background-color: #000000 !important;
+        color: white !important;
+    }
+    .stSidebar .stTextInput > div > div > input {
+        background-color: #000000 !important;
+        color: white !important;
+    }
+    .stSidebar .stButton > button {
+        background-color: #333333 !important;
+        color: white !important;
+        border: 1px solid #555555 !important;
+    }
+    .stSidebar .stButton > button:hover {
+        background-color: #444444 !important;
+    }
+    .stSidebar .stFileUploader > div {
+        background-color: #000000 !important;
+    }
+    .stSidebar h1, .stSidebar h2, .stSidebar h3, .stSidebar h4, .stSidebar h5, .stSidebar h6 {
+        color: white !important;
+    }
+    .stSidebar p, .stSidebar div {
+        color: white !important;
+    }
+    .stSidebar .stSuccess {
+        background-color: #1f4e3d !important;
+        color: white !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     # Sidebar for uploading PDF files
     with st.sidebar:
-        # Display smaller logo in sidebar
-        logo_base64 = get_logo_base64("download.png")
+        # Display centered logo in sidebar
+        logo_base64 = get_logo_base64("download-removebg-preview.png")
         if logo_base64:
             st.markdown(f"""
-            <div style="text-align: center; margin-bottom: 20px;">
+            <div style="text-align: center; margin-bottom: 20px; padding: 10px;">
                 <img src="data:image/png;base64,{logo_base64}" width="60" height="60">
             </div>
             """, unsafe_allow_html=True)
@@ -139,7 +180,6 @@ def main():
                 st.success("Done")
 
     # Main content area for displaying chat messages
-    display_logo()  # Display the logo at the top
     st.title("VariPhi RAG Engine")
     st.write("Welcome to the chat!")
     st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
